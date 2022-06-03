@@ -1,13 +1,27 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:whatsapp_clone/model/chat_model.dart';
+import 'package:whatsapp_clone/screens/individual_page.dart';
 
 class CustomCard extends StatelessWidget {
-  const CustomCard({Key? key}) : super(key: key);
+  const CustomCard({Key? key, required this.chatModel}) : super(key: key);
+  final ChatModel chatModel;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => IndividualPage(
+              chatModel: chatModel,
+            ),
+          ),
+        );
+      },
       child: Column(
         children: [
           ListTile(
@@ -15,34 +29,39 @@ class CustomCard extends StatelessWidget {
               radius: 30,
               backgroundColor: Colors.blueGrey,
               child: SvgPicture.asset(
-                'assets/groups.svg',
+                chatModel.isGroup ? 'assets/groups.svg' : 'assets/person.svg',
                 color: Colors.white,
                 height: 37,
                 width: 37,
               ),
             ),
-            title: const Text(
-              "John Doe",
-              style: TextStyle(
+            title: Text(
+              chatModel.name,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
             subtitle: Row(
-              children: const [
-                Icon(Icons.done_all),
-                SizedBox(width: 5),
-                Text(
-                  "Hey, how are you doing?",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
+              children: [
+                const Icon(Icons.done_all),
+                const SizedBox(width: 5),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 2.2,
+                  child: Text(
+                    chatModel.currentMessage,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
               ],
             ),
-            trailing: const Text(
-              '18:04',
+            trailing: Text(
+              chatModel.time,
             ),
           ),
           const Padding(
